@@ -1,0 +1,7 @@
+# credenciales de http://localhost:1337/register
+erickadmin
+erickadmin@logiflow.com
+contra: admin123
+
+# comando para verificar el loggin centralizado de método, URI, código de respuesta y userId, que es lo que pedia, para ver los logs de la info de la peticion
+docker logs kong-gateway

@@ -1,0 +1,4 @@
+CREATE DATABASE db_auth;
+CREATE DATABASE db_fleet;
+CREATE DATABASE db_orders;
+CREATE DATABASE db_billing;

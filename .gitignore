@@ -1,0 +1,13 @@
+# archivos compilados de Java
+target/
+*.class
+# archivos de configuracion de IntelliJ
+.idea/
+*.iml
+*.iws
+*.log
+.DS_Store
+postgres_data/
+kong_data/
+konga_mongo_data/
+.env
