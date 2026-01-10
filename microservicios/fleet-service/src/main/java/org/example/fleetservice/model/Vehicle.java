@@ -15,6 +15,10 @@ public abstract class Vehicle implements IRoutable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // se mapea a solo lectura para que lo muestre en el GraphQL
+    @Column(name = "vehicle_type", insertable = false, updatable = false)
+    private String vehicleType;
+
     @Column(unique = true, nullable = false)
     private String plate; // placa
 

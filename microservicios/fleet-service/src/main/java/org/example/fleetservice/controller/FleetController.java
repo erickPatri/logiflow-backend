@@ -45,4 +45,10 @@ public class FleetController {
     public ResponseEntity<Vehicle> assignDriver(@PathVariable Long vehicleId, @PathVariable Long driverId) {
         return ResponseEntity.ok(fleetService.assignDriverToVehicle(vehicleId, driverId));
     }
+
+    // Obtener vehiculo por id
+    @GetMapping("/vehicles/{id}")
+    public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long id) {
+        return ResponseEntity.ok(fleetService.getVehicleById(id));
+    }
 }

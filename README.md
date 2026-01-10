@@ -6,16 +6,17 @@ Este proyecto implementa patrones de diseño modernos para aplicaciones distribu
 
 ## 🚀 Características Principales
 
-- **Arquitectura de Microservicios**: 4 servicios independientes desarrollados en Spring Boot.
+- **Arquitectura de Microservicios**: 5 servicios independientes desarrollados en Spring Boot.
 - **API Gateway**: Kong Gateway como punto de entrada único, manejando autenticación y enrutamiento.
 - **Seguridad**: Autenticación JWT centralizada y autorización basada en roles.
 - **Orquestación**: Docker Compose para facilitar el despliegue y gestión de contenedores.
 - **Bases de Datos**: PostgreSQL para datos de negocio y MongoDB para configuraciones.
+- **GraphQL**: Servicio dedicado para consultas unificadas y orquestación de datos.
 - **Monitoreo**: Dashboard Konga para administración visual del Gateway.
 
 ## 🏗️ Arquitectura del Sistema
 
-El backend se compone de **4 microservicios** independientes, comunicándose a través de un **API Gateway**.
+El backend se compone de **5 microservicios** independientes, comunicándose a través de un **API Gateway**.
 
 | Componente          | Tecnología     | Puerto (Docker/Local) | Descripción |
 |---------------------|----------------|-----------------------|-------------|
@@ -25,6 +26,7 @@ El backend se compone de **4 microservicios** independientes, comunicándose a t
 | **Fleet Service**  | Spring Boot   | `8082`               | Gestión de conductores y vehículos. |
 | **Order Service**  | Spring Boot   | `8083`               | Gestión de pedidos y envíos. |
 | **Billing Service**| Spring Boot   | `8084`               | Facturación y cobros. |
+| **GraphQL Service**| Spring for GraphQL   | `8085`               | Orquestador y punto de consulta unificado. |
 
 ### Bases de Datos
 - **PostgreSQL (Puerto 5433)**: Almacena los datos de negocio (`db_auth`, `db_fleet`, `db_orders`, `db_billing`).
@@ -82,8 +84,9 @@ Si las bases de datos no se crean automáticamente, usa un cliente como PGAdmin 
    - `microservicios/fleet-service/src/main/java/.../FleetServiceApplication.java`
    - `microservicios/order-service/src/main/java/.../OrderServiceApplication.java`
    - `microservicios/billing-service/src/main/java/.../BillingServiceApplication.java`
+   - `microservicios/graphql-service/src/main/java/.../GraphQLServiceApplication.java`
 
-4. Asegúrate de que la consola no muestre errores de conexión y que los 4 servicios estén corriendo simultáneamente.
+4. Asegúrate de que la consola no muestre errores de conexión y que los 5 servicios estén corriendo simultáneamente.
 
 ## 📖 Uso
 
@@ -138,7 +141,45 @@ Para consultar datos en los servicios de Flota, Pedidos o Facturación, debes en
 - **Billing Service**:
   - `POST /api/bills` - Crear borrador de factura
 
+- **GraphQL Service**:
+  - `POST /graphql` - Consultas GraphQL
+
 **IMPORTANTE**: Para probar todas las rutas y funcionalidades puedes revisar los controladores de cada microservicio, si olvidar el /api Y TAMPOCO EL APUNTAR siempre al puerto 8000 del APIGATEWAY.
+
+## 🧪 Guía de Uso (GraphQL)
+
+Puedes probar la API de dos formas:
+
+1. **Interfaz Visual (GraphiQL)**:
+    - Abre tu navegador para explorar el esquema y probar consultas interactivamente en `http://localhost:8085/graphiql`.
+    - Aquí puedes escribir y ejecutar consultas GraphQL de manera interactiva.
+
+2. **Endpoint API (POSTMAN/FRONTEND)**:
+    - Realiza peticiones `POST` al endpoint `http://localhost:8085/graphql`.
+    - URL: `http://localhost:8085/graphql`
+    - Método: `POST`
+    - Headers:
+      - AUTORIZATION: Bearer + tu token JWT
+    - Body (JSON):
+      ```GraphQL
+        query {
+          orders {
+            id
+            description
+            status
+            deliveryLocation
+            # Datos agregados desde Fleet Service
+            vehicle {
+              plate
+              model
+              brand
+              vehicleType
+            }
+          }
+        }
+      ```
+
+Esta consulta obtiene los pedidos y, mágicamente, rellena los datos del vehículo asignado (que viven en otro microservicio) solo si el cliente lo solicita:
 
 ## 🔧 Solución de Problemas
 

@@ -84,6 +84,12 @@ public class FleetService {
         return vehicleRepository.findAll();
     }
 
+    // buscar un vehiculo por su ID
+    public Vehicle getVehicleById(Long id) {
+        return vehicleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Vehículo no encontrado con ID: " + id));
+    }
+
     public Vehicle assignDriverToVehicle(Long vehicleId, Long driverId) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new RuntimeException("Vehículo no encontrado"));
@@ -101,5 +107,7 @@ public class FleetService {
 
         return vehicleRepository.save(vehicle); // guardar cambios del vehiculo
     }
+
+
 
 }

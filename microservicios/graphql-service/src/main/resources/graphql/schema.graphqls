@@ -1,0 +1,49 @@
+# tipos de Entidad a partir de los modelos
+type Order {
+    id: ID!
+    description: String
+    clientId: String        # ID del cliente
+    pickupLocation: String
+    deliveryLocation: String
+    status: String
+    createdAt: String
+    # relaciones calculadas
+    vehicle: Vehicle        # se usa el 'assignedVehicleId'
+}
+
+type Vehicle {
+    id: ID!
+    plate: String
+    model: String
+    brand: String
+    vehicleType: String     # discriminador (MOTO, CAMION, etc.)
+    driver: Driver          # relación 1 a 1
+}
+
+type Driver {
+    id: ID!
+    userId: ID
+    licenseNumber: String
+    phoneNumber: String
+    status: String
+}
+
+type FleetSummary {
+    total: Int
+    available: Int
+    onRoute: Int
+}
+
+# los inputs que son los filtros
+
+input OrderFilterInput {
+    deliveryLocation: String  # se filtra lo que realmente existe
+    status: String
+}
+
+# query root o puntos de entrada
+
+type Query {
+    orders(filter: OrderFilterInput): [Order]    # obtener pedidos con filtros opcionales
+    activeFleet(location: String): FleetSummary     # resumen de flota filtrado por ubicacion para simular la zona
+}
