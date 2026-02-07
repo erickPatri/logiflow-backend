@@ -20,8 +20,10 @@ public class JwtService {
     // la llave secreta, seria como la firma, si alguien cambia el token, la firma ya no coincidira.
 
     // generar el token, se le pasa el username y devuelve el String del token
-    public String generateToken(String username){
+    public String generateToken(String username, String role){
         Map<String, Object> extraClaims = new HashMap<>();
+        // se guarda el rol dentro del mapa
+        extraClaims.put("role", role);
         return createToken(extraClaims, username);
     }
 

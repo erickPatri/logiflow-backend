@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: graphql-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: graphql-service
+  template:
+    metadata:
+      labels:
+        app: graphql-service
+    spec:
+      containers:
+      - name: graphql-service
+        image: erickvinu/graphql-service:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8085
+        env:
+        # LOS NOMBRES DE LOS SERVICIOS DE KUBERNETES
+        - name: SERVICE_URL_FLEET
+          value: "http://fleet-service:8082/fleet"
+        - name: SERVICE_URL_ORDERS
+          value: "http://order-service:8083/orders"
+        - name: SERVICE_URL_AUTH
+          value: "http://auth-service:8081/auth"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: graphql-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: graphql-service
+  ports:
+    - port: 8085
+      targetPort: 8085

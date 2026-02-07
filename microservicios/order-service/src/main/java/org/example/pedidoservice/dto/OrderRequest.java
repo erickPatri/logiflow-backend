@@ -8,4 +8,6 @@ public class OrderRequest {
     private String description;
     private String pickupLocation;
     private String deliveryLocation;
+    private Double latitude;
+    private Double longitude;
 }

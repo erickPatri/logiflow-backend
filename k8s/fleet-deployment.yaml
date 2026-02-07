@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleet-service
+  template:
+    metadata:
+      labels:
+        app: fleet-service
+    spec:
+      hostAliases:
+      - ip: "192.168.49.1" 
+        hostnames:
+        - "host.minikube.internal"
+      containers:
+      - name: fleet-service
+        image: erickvinu/fleet-service:v1   # IMAGEN DEL HUB
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8082
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:postgresql://host.minikube.internal:5433/db_fleet 
+        - name: SPRING_DATASOURCE_USERNAME
+          value: postgres
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: admin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleet-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: fleet-service
+  ports:
+    - port: 8082
+      targetPort: 8082

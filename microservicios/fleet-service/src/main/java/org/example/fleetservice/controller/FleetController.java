@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/fleet")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class FleetController {
     private final FleetService fleetService;
 
@@ -51,4 +52,38 @@ public class FleetController {
     public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long id) {
         return ResponseEntity.ok(fleetService.getVehicleById(id));
     }
+
+    @GetMapping("/available")
+    public ResponseEntity<Vehicle> getAvailableVehicle() {
+        Vehicle vehicle = fleetService.findAvailableVehicle();
+        if (vehicle == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(vehicle);
+    }
+
+    // Endpoint para liberar vehículo
+    @PutMapping("/vehicles/{id}/release")
+    public ResponseEntity<Void> releaseVehicle(@PathVariable Long id) {
+        fleetService.releaseVehicle(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/drivers/{driverId}/vehicle")
+    public ResponseEntity<Vehicle> getVehicleByDriver(@PathVariable Long driverId) {
+        Vehicle vehicle = fleetService.getVehicleByDriver(driverId);
+        if (vehicle == null) {
+            return ResponseEntity.noContent().build(); // 204 No Content
+        }
+        return ResponseEntity.ok(vehicle);
+    }
+
+    // Endpoint para el botón
+    @PatchMapping("/drivers/{id}/status")
+    public ResponseEntity<String> updateDriverStatus(@PathVariable Long id, @RequestParam String status) {
+        fleetService.updateDriverStatus(id, status);
+        return ResponseEntity.ok("Estado actualizado a: " + status);
+    }
+
+
 }

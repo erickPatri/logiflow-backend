@@ -10,5 +10,7 @@ public record OrderDTO(
         String deliveryLocation,
         String status,
         LocalDateTime createdAt,
-        Long assignedVehicleId
+        Long assignedVehicleId,
+        Double latitude,
+        Double longitude
 ) {}

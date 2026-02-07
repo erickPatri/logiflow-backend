@@ -35,7 +35,7 @@ public class AuthService {
 
         userRepository.save(user); // guardar en la BD
 
-        String jwtToken = jwtService.generateToken(user.getUsername()); // genero el token real usando el username
+        String jwtToken = jwtService.generateToken(user.getUsername(), user.getRole().name()); // genero el token real usando el username
 
         return AuthResponse.builder()
                 .token(jwtToken)
@@ -49,7 +49,7 @@ public class AuthService {
         );
 
         User user = userRepository.findByUsername(request.getUsername()).orElseThrow(); // si sus credenciales son validas se busca al usuario para generar su token
-        String jwtToken = jwtService.generateToken(user.getUsername());
+        String jwtToken = jwtService.generateToken(user.getUsername(), user.getRole().name());
 
         return  AuthResponse.builder()
                 .token(jwtToken)

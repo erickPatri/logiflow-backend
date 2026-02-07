@@ -1,0 +1,19 @@
+{
+"compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",             
+    "moduleResolution": "node",       
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    
+    // Configuración vital para TypeORM
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  },
+  "ts-node": {
+    "esm": false
+  }
+}

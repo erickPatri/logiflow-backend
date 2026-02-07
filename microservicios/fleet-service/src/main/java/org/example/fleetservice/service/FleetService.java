@@ -108,6 +108,60 @@ public class FleetService {
         return vehicleRepository.save(vehicle); // guardar cambios del vehiculo
     }
 
+    public Vehicle findAvailableVehicle() {
+        // Buscamos en BD solo los vehículos con conductor DISPONIBLE
+        // (Esto usa el método del repositorio findByDriver_Status)
+        List<Vehicle> availableVehicles = vehicleRepository.findByDriver_Status(DriverStatus.DISPONIBLE);
 
+        if (availableVehicles.isEmpty()) {
+            System.out.println("No hay vehículos disponibles en este momento.");
+            return null; // Retornamos null para que el OrderService sepa que nadie pudo tomarlo
+        }
+
+        // se toma el primero de la lista }
+        Vehicle selectedVehicle = availableVehicles.get(0);
+
+        // ACTUALIZACIÓN DE ESTADO
+        // se cambia el estado del conductor a EN_RUTA para "bloquearlo"
+        Driver driver = selectedVehicle.getDriver();
+        driver.setStatus(DriverStatus.EN_RUTA);
+        driverRepository.save(driver);
+
+        System.out.println("Vehículo " + selectedVehicle.getPlate() + " asignado. Conductor ahora está EN_RUTA.");
+
+        return selectedVehicle;
+    }
+
+    public void releaseVehicle(Long vehicleId) {
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Vehículo no encontrado"));
+
+        if (vehicle.getDriver() != null) {
+            Driver driver = vehicle.getDriver();
+            driver.setStatus(DriverStatus.DISPONIBLE);
+            driverRepository.save(driver);
+            System.out.println("Vehículo " + vehicle.getPlate() + " liberado. Conductor DISPONIBLE.");
+        }
+    }
+
+    // Método para cambiar estado manualmente (Botón del Frontend)
+    public void updateDriverStatus(Long driverId, String status) {
+        Driver driver = driverRepository.findById(driverId)
+                .orElseThrow(() -> new RuntimeException("Conductor no encontrado"));
+
+        try {
+            DriverStatus newStatus = DriverStatus.valueOf(status.toUpperCase());
+            driver.setStatus(newStatus);
+            driverRepository.save(driver);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Estado inválido");
+        }
+    }
+
+    // Obtener el vehículo asignado a un conductor específico
+    public Vehicle getVehicleByDriver(Long driverId) {
+        return vehicleRepository.findByDriver_Id(driverId)
+                .orElse(null); // Retorna null si no tiene vehículo asignado
+    }
 
 }

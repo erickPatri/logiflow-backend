@@ -3,6 +3,7 @@ package org.example.pedidoservice.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.pedidoservice.dto.OrderRequest;
 import org.example.pedidoservice.model.Order;
+import org.example.pedidoservice.model.OrderStatus;
 import org.example.pedidoservice.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,13 +13,28 @@ import java.util.List;
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class OrderController {
     private final OrderService orderService;
 
     // http://localhost:8083/orders
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody OrderRequest request) {
-        return ResponseEntity.ok(orderService.createOrder(request));
+        // Convertimos el DTO (Request) a la Entidad (Order) manualmente
+        Order newOrder = new Order();
+        newOrder.setDescription(request.getDescription());
+        newOrder.setClientId(request.getClientId());
+        newOrder.setPickupLocation(request.getPickupLocation());
+        newOrder.setDeliveryLocation(request.getDeliveryLocation());
+
+        newOrder.setLatitude(request.getLatitude());
+        newOrder.setLongitude(request.getLongitude());
+
+        // ponemos un default aqui por seguridad
+        newOrder.setStatus(OrderStatus.PENDIENTE);
+
+        // le pasamos la entidad 'Order' al servicio
+        return ResponseEntity.ok(orderService.createOrder(newOrder));
     }
 
     @GetMapping
@@ -43,6 +59,15 @@ public class OrderController {
     public ResponseEntity<String> cancelOrder(@PathVariable Long orderId) {
         orderService.cancelOrder(orderId);
         return ResponseEntity.ok("Pedido cancelado exitosamente");
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Order> updateStatus(
+            @PathVariable Long id,
+            @RequestParam String status
+    ) {
+        Order updatedOrder = orderService.updateOrderStatus(id, status);
+        return ResponseEntity.ok(updatedOrder);
     }
 
 }

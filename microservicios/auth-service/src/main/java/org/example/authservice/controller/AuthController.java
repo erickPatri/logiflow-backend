@@ -6,14 +6,12 @@ import org.example.authservice.dto.LoginRequest;
 import org.example.authservice.dto.RegisterRequest;
 import org.example.authservice.service.AuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController // para especificar que es un controlador de REST y habla en JSON
 @RequestMapping("/auth") // para especificar que las rutas empiezan con /auth
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class AuthController {
     private final AuthService authService;
 

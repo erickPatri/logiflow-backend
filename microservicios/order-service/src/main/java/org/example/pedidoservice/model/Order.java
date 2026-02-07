@@ -40,6 +40,12 @@ public class Order {
     @Column(name = "assigned_vehicle_id") // relacion futura con fleet-fervice para saber que vehiculo lo lleva
     private Long assignedVehicleId;
 
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     @PrePersist // esto se ejecuta automáticamente antes de guardar por primera vez en la BD
     public void prePersist() {
         this.createdAt = LocalDateTime.now(); // para guardar fecha y hora automaticamente a la hora de crear un pedido

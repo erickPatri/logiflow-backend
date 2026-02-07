@@ -1,6 +1,7 @@
 version: '3.8'
 
-services: # base de datos logiflow
+services:
+  # 1. Base de datos Logiflow
   postgres-db:
     image: postgres:15-alpine
     container_name: logiflow-postgres
@@ -15,7 +16,22 @@ services: # base de datos logiflow
     networks:
       - logiflow-network
 
-  # kong gateway
+  # 2. Broker de Mensajeria (RabbitMQ) 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: logiflow-rabbitmq
+    ports:
+      - "5672:5672"   # Puerto para comunicacion entre microservicios
+      - "15672:15672" # Puerto para el Panel Visual (Entrar con guest/guest)
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - logiflow-network
+
+  # 3. Kong Gateway (Base de datos)
   kong-database:
     image: postgres:13
     container_name: kong-database
@@ -28,6 +44,7 @@ services: # base de datos logiflow
     networks:
       - logiflow-network
 
+  # 4. Kong Migration (Inicializador)
   kong-migration:
     image: kong:latest
     container_name: kong-migration
@@ -42,6 +59,7 @@ services: # base de datos logiflow
     networks:
       - logiflow-network
 
+  # 5. Kong Gateway (Servicio Principal)
   kong:
     image: kong:latest
     container_name: kong-gateway
@@ -65,7 +83,7 @@ services: # base de datos logiflow
     networks:
       - logiflow-network
 
-  # base de datos konga con mongo
+  # 6. Base de datos para Konga (MongoDB)
   mongo:
     image: mongo:4.2
     container_name: konga-mongo
@@ -74,7 +92,7 @@ services: # base de datos logiflow
     volumes:
       - konga_mongo_data:/data/db
 
-  # konga panel visual
+  # 7. Panel Visual Konga
   konga:
     image: pantsel/konga
     container_name: konga-ui
@@ -94,6 +112,7 @@ volumes:
   postgres_data:
   kong_data:
   konga_mongo_data: 
+  rabbitmq_data: 
 
 networks:
   logiflow-network:
