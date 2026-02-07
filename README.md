@@ -651,7 +651,7 @@ logiflow_frontend/
 **Link del repo del Frontend**
 
 - **Nombre**: Erick Patricio Moreira Vinueza
-- **GitHub**: (https://github.com/erickPatri/logiflow-backend)
+- **GitHub**: (https://github.com/erickPatri/logiflow-frontend)
 
 ### Dashboards Interactivos
 
