@@ -648,6 +648,10 @@ logiflow_frontend/
 ---
 
 ## 🎨 Características del Frontend
+**Link del repo del Frontend**
+
+- **Nombre**: Erick Patricio Moreira Vinueza
+- **GitHub**: (https://github.com/erickPatri/logiflow-backend)
 
 ### Dashboards Interactivos
 
